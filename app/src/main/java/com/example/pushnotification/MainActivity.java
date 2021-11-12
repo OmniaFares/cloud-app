@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-      //  getToken();
-       getTopic();
+        getToken();
+        //getTopic();
     }
 
     private void getToken() {
