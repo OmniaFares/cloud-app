@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pushnotification.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -23,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference reference;
 
+    String token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("notifications");
         getToken();
         //getTopic();
     }
@@ -42,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!task.isSuccessful()){
                     Log.d(TAG, "onComplete: Failed to get token");
                 }
-
-                String token = task.getResult();
+                token = task.getResult();
+                FirebaseDatabase.getInstance().getReference("User").child("token").setValue(token);
                 Log.d(TAG, "onComplete: " + token);
             }
         });

@@ -10,16 +10,24 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.pushnotification.MainActivity;
 import com.example.pushnotification.R;
+import com.example.pushnotification.models.Notification;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.w3c.dom.Notation;
 
 public class MyFirebaseServices extends FirebaseMessagingService{
 
     private static final String TAG = "PushNotification";
     private static final String CHANNEL_ID = "101";
+    private static int id = 0;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        Notification notification = new Notification(remoteMessage.getNotification().getTitle(),
+                                                        remoteMessage.getNotification().getBody());
+        FirebaseDatabase.getInstance().getReference("Notification").child(String.valueOf(id++)).setValue(notification);
         showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
     }
 
