@@ -35,7 +35,8 @@ public class MyFirebaseServices extends FirebaseMessagingService{
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Notification notification = new Notification(remoteMessage.getNotification().getTitle(),
                                                         remoteMessage.getNotification().getBody());
-        FirebaseDatabase.getInstance().getReference("Notification").child(String.valueOf(LocalDateTime.now())).setValue(notification);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        FirebaseDatabase.getInstance().getReference("Notification").child(dtf.format(LocalDateTime.now())).setValue(notification);
         showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
     }
 

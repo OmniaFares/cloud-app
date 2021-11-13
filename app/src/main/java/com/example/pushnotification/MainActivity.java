@@ -9,10 +9,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.pushnotification.models.User;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
+
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -20,9 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "PushNotification";
     private static final String CHANNEL_ID = "101";
-
-    FirebaseDatabase database;
-    DatabaseReference reference;
 
     String token;
 
