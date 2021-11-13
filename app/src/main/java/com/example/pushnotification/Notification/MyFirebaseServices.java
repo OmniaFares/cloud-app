@@ -2,9 +2,12 @@ package com.example.pushnotification.Notification;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Build;
+
+import java.time.LocalDateTime;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -17,17 +20,22 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.w3c.dom.Notation;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 public class MyFirebaseServices extends FirebaseMessagingService{
 
     private static final String TAG = "PushNotification";
     private static final String CHANNEL_ID = "101";
     private static int id = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Notification notification = new Notification(remoteMessage.getNotification().getTitle(),
                                                         remoteMessage.getNotification().getBody());
-        FirebaseDatabase.getInstance().getReference("Notification").child(String.valueOf(id++)).setValue(notification);
+        FirebaseDatabase.getInstance().getReference("Notification").child(String.valueOf(LocalDateTime.now())).setValue(notification);
         showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
     }
 
