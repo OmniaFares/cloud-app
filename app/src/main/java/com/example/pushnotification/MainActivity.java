@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.pushnotification.Notification.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         createNotificationChannel();
         getToken();
-        //getTopic();
+        getTopic();
     }
 
     private void getToken() {
@@ -40,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
                 if(!task.isSuccessful()){
                     Log.d(TAG, "onComplete: Failed to get token");
                 }
-                token = task.getResult();
-                FirebaseDatabase.getInstance().getReference("User").child("token").setValue(token);
                 Log.d(TAG, "onComplete: " + token);
             }
         });
