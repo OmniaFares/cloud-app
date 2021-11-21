@@ -1,5 +1,6 @@
 package com.example.pushnotification;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -9,12 +10,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import com.example.pushnotification.Notification.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "PushNotification";
     private static final String CHANNEL_ID = "101";
-    private static final int PICK_FILE_REQUEST_CODE = 300;
 
     String token;
 
@@ -57,25 +59,30 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        startActivityForResult(intent,PICK_FILE_REQUEST_CODE);
+        someActivityResultLauncher.launch(intent);
+
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK)
-        {
-            Uri path = data.getData();
-            uploadFile(path);
-
-        }
-    }
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        Uri path = data.getData();
+                        uploadFile(path);
+                    }
+                }
+            });
 
     private void uploadFile(Uri path)
     {
         StorageReference root =  FirebaseStorage.getInstance().getReference();
         final StorageReference file = root.child("images/" + path.getLastPathSegment());
         UploadTask taskUpload = file.putFile(path);
+
         taskUpload.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
@@ -83,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         taskUpload.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
